@@ -9,7 +9,7 @@ import org.uqbar.commons.utils.Observable
 @Observable
 class TarifaBandaNegativa extends Tarifa {
 	
-	new(float unValor) {
+	new(Double unValor) {
 		super(unValor)
 	}
 	

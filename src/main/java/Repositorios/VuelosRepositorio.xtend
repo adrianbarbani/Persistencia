@@ -1,5 +1,6 @@
 package Repositorios
 
+import Dominio.Aeropuerto
 import Dominio.Busqueda
 import Dominio.Usuario
 import Dominio.Vuelo
@@ -45,7 +46,7 @@ class VuelosRepositorio {
 		vuelosPrecioMax(unaBusqueda.maxPrecio)
 		
 		finalizarBusqueda(unaBusqueda)
-		return	vuelosBuffer
+		return	unaBusqueda.resultados
 	}
 	
 	def iniciarBusqueda() {
@@ -57,14 +58,12 @@ class VuelosRepositorio {
 		busqueda.setResultados(vuelosBuffer)
 	}
 	
-	def vuelosConDestino(String destino){
-		if (destino != null && !destino.equals("TODOS")) 
-		{vuelosBuffer = vuelosBuffer.filter[conDestino(destino)].toList}
+	def vuelosConDestino(Aeropuerto unDestino){
+		if (unDestino != null) {vuelosBuffer = vuelosBuffer.filter[destino == unDestino].toList}
 	}
 	
-	def vuelosConOrigen(String origen){
-		if (origen != null && !origen.equals("TODOS"))
-		{vuelosBuffer = vuelosBuffer.filter[conOrigen(origen)].toList}
+	def vuelosConOrigen(Aeropuerto unOrigen){
+		if (unOrigen != null)	{vuelosBuffer = vuelosBuffer.filter[origen == unOrigen].toList}
 	}
 	
 	def vuelosDesdeFecha(Date salida){
@@ -75,18 +74,12 @@ class VuelosRepositorio {
 		if (llegada != null) {vuelosBuffer = vuelosBuffer.filter[llegaAntesQue(llegada)].toList}	
 	}
 	
-	def vuelosPrecioMax(String precioMax){
-		if (precioMax != null) {val valor = Float.parseFloat(precioMax)
-			vuelosBuffer = vuelosBuffer.filter[contTarifaMenorA(valor)].toList
-		}
+	def vuelosPrecioMax(Double precioMax){
+		if (precioMax != null) {vuelosBuffer = vuelosBuffer.filter[contTarifaMenorA(precioMax)].toList}
 	}
 		
 	def agregarBusqueda(Busqueda busqueda) {
 		busquedasRealizadas.add(busqueda)
-	}
-	
-	def limpiarBufferVuelos(){
-		vuelosBuffer = new ArrayList<Vuelo>
 	}
 	
 	def busquedasDe(Usuario usr){

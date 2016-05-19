@@ -6,13 +6,13 @@ import org.uqbar.commons.utils.Observable
 
 @Accessors
 @Observable
-abstract class TarifaEspecial extends Tarifa {
+class TarifaEspecial extends Tarifa {
 	
-	new(float unValor) {
+	new(Double unValor) {
 		super(unValor)
 	}
 	
-	new (float unValor, float unDescuento){
+	new (Double unValor, Double unDescuento){
 		super (unValor, unDescuento)
 	}
 	

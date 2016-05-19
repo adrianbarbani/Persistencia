@@ -16,13 +16,13 @@ class Busqueda {
 	public Usuario quienBusca
 	public List<Vuelo> resultados = new ArrayList<Vuelo>
 
-	String origen
-	String destino
+	Aeropuerto origen
+	Aeropuerto destino
 	Date desdeFecha
 	Date hastaFecha
-	String maxPrecio
+	Double maxPrecio
 
-	new (String inicio, String fin, Date desde, Date hasta, String max, Usuario usr) {
+	new (Aeropuerto inicio, Aeropuerto fin, Date desde, Date hasta, Double max, Usuario usr) {
 		origen = inicio
 		destino = fin
 		desdeFecha = desde

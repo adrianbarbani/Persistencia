@@ -2,6 +2,7 @@ package Vista
 
 import AppModel.BusquedaVueloAppModel
 import AppModel.ReservaAsientoAppModel
+import Dominio.Aeropuerto
 import Dominio.Vuelo
 import org.uqbar.arena.aop.windows.TransactionalDialog
 import org.uqbar.arena.bindings.NotNullObservable
@@ -27,11 +28,10 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 
 	override protected createFormPanel(Panel mainPanel) {
 		panelDeBusqueda(mainPanel)	
-//		botoneraAcciones(mainPanel)
+		botoneraAcciones(mainPanel)
 		tablaResultados(mainPanel)
-		botoneraAcciones(mainPanel) //si la pongo aca, desaparece un boton, parece ser algo grafico.
 	}
-
+	
 	def panelDeBusqueda(Panel mainPanel) {
 		
 		new Panel(mainPanel) => [
@@ -39,25 +39,28 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 			new Label(it).text = "Origen"
 			new Label(it).text = "Destino"
 			new Label(it).text = "Precio maximo"
-			new Selector<String>(it) => [
+			new Selector<Aeropuerto>(it) => [
 				allowNull = true
 				bindValueToProperty = "origen"
 				bindItems(new ObservableProperty(modelObject, "todosLosAeropuertos"))
+				.adaptWith(typeof(Aeropuerto), "nombre")
 				width = 100
 			]
-			new Selector<String>(it) => [
-				allowNull = true
+			
+			new Selector<Aeropuerto>(it) => [
+				allowNull(true)
 				bindValueToProperty = "destino"
 				bindItems(new ObservableProperty(modelObject, "todosLosAeropuertos"))
+				.adaptWith(typeof(Aeropuerto), "nombre")
 				width = 100
 			]
 			new TextBox(it) => [
-				bindValueToProperty("tarifaMax")
 				width = 80
+				bindValueToProperty("tarifaMax")
 			]
-			new Label(it).text = "Fecha Desde"
-			new Label(it).text = "Fecha Hasta"
-			new Label(it).text = "  " //boton
+			new Label(it).text = "Sale despues de:"
+			new Label(it).text = "Llega antes de:"
+			new Label(it).text = "* formato mm/dd/aaaa"
 			new TextBox(it) => [
 				bindValueToProperty("fechaDesde")
 				width = 100
@@ -66,11 +69,20 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 				bindValueToProperty("fechaHasta")
 				width = 100
 			]
-			new Button(it) => [
-				caption = "Buscar"
-				onClick [|modelObject.buscar]
-				setAsDefault
-				width = 80
+			new Panel(it) =>[
+				layout = new HorizontalLayout
+				
+				new Button(it) => [
+					caption = "Buscar"
+					onClick [|modelObject.buscar]
+					setAsDefault
+					width = 80
+				]
+				
+				new Button(it) => [
+					caption = "Limpiar Campos"
+					onClick [|modelObject.clear]
+				]
 			]
 		]
 	}
@@ -113,8 +125,6 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 			]
 		]
 	}
-	
-		
 
 	def botoneraAcciones(Panel mainPanel) {
 		val elementSelected = new NotNullObservable("vueloSeleccionado")
@@ -125,6 +135,13 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 			onClick [|this.reservas]
 			bindEnabled(elementSelected)
 		]
+		val resultados = new NotNullObservable("resultados")
+		new Button(panel) => [
+			width = 100
+			caption = "Limpiar Grilla"
+			onClick [|modelObject.resultados = null]
+			bindEnabled(resultados)
+		]
 		new Button(panel) => [
 			width = 100
 			caption = "Volver"
@@ -133,9 +150,7 @@ class BusquedaVuelo extends TransactionalDialog<BusquedaVueloAppModel> {
 	}
 
 	def reservas() {
-		modelObject.separarAsientos()
-		val proxModel = new ReservaAsientoAppModel(modelObject.usr, modelObject.vueloSeleccionado,
-			modelObject.asientosDisponibles)
+		val proxModel = new ReservaAsientoAppModel(modelObject.usr, modelObject.vueloSeleccionado)
 		this.openDialog(new ReservaAsiento(this, proxModel))
 	}
 

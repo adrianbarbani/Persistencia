@@ -18,15 +18,14 @@ class Vuelo {
 	Date fechaLlegada
 	List<Escala> escalas = newArrayList
 	
-	SimpleDateFormat dateToString = new SimpleDateFormat("dd/MM/yyyy - hh:mm 'hs'")
+	transient static SimpleDateFormat dateToString = new SimpleDateFormat("dd/MM/yyyy - hh:mm 'hs'")
 	
 	def agregarEscala(Escala escala){
 		escalas.add(escala)
 	}
-	
 		
 	def getCantidadDeAsientosLibres(){
-		asientos.filter[ asiento | asiento.duenio == null].toList.size()
+		asientos.filter[disponible].toList.size()
 	}
 	
 	def conDestino(String destinoStr) {
@@ -37,16 +36,11 @@ class Vuelo {
 		origen.nombre.equals(origenStr)
 	}
 	
-//	def getCantAsientosMenorA(float valor){
-//		conTar
-//	}
-	
-	def contTarifaMenorA(float valor){
+	def contTarifaMenorA(Double valor){
 		asientos.exists[conPrecioMaximo(valor)]
-//		!asientosValorMaximo(valor).empty
 	}
 	
-	def asientosValorMaximo (float valor){
+	def asientosValorMaximo (Double valor){
 		asientos.filter[conPrecioMaximo(valor)].toList
 	}
 	

@@ -1,20 +1,23 @@
 package Dominio
 
-import org.uqbar.commons.utils.Observable
+import java.util.Date
+import java.util.GregorianCalendar
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.commons.utils.Observable
 
 @Observable
 @Accessors
 class Reserva {
 	
 	Asiento asiento
-	
     Vuelo vuelo
-    String fechaReserva  
+    Date fechaReserva  
     
 	new(Asiento unAsiento){
+		fechaReserva = GregorianCalendar.instance.time
+		unAsiento.reservar()
 		asiento = unAsiento
-		vuelo = asiento.vuelo
+		vuelo = unAsiento.vuelo
 	}
 	
 	def getTramos(){

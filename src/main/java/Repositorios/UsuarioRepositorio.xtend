@@ -34,5 +34,9 @@ class UsuarioRepositorio {
 		val Usuario usuario = todosLosUsuarios.findFirst[usr|usr.nick == nick && usr.contrasenia == contrasenia]
 		return usuario;
 	}
+	
+	def agregarUsuario(Usuario unUsr){
+		todosLosUsuarios.add(unUsr)
+	}
 
 }

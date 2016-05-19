@@ -1,6 +1,6 @@
 package AppModel
 
-import Dominio.Asiento
+import Dominio.Aeropuerto
 import Dominio.Busqueda
 import Dominio.Usuario
 import Dominio.Vuelo
@@ -17,36 +17,36 @@ import org.uqbar.commons.utils.Observable
 class BusquedaVueloAppModel {
 	
 	Usuario usr	
-	List <String> todosLosAeropuertos = new ArrayList<String>
+	List <Aeropuerto> todosLosAeropuertos = new ArrayList<Aeropuerto>
 	
-	String origen
-	String destino
+	Aeropuerto origen
+	Aeropuerto destino
 	Date fechaDesde
 	Date fechaHasta
-	String tarifaMax
+	Integer tarifaMax
 		
 	Vuelo vueloSeleccionado
-	List <Vuelo> resultados = newArrayList
-	List<Asiento> asientosDisponibles = newArrayList
+	List <Vuelo> resultados = null
 	
 	new (Usuario unUsr){
 		usr = unUsr
-		todosLosAeropuertos.add("TODOS")
-		todosLosAeropuertos.addAll(AeropuertosRepositorio.getInstance.nombreDeTodosLosAeropuertos)
+		todosLosAeropuertos = AeropuertosRepositorio.getInstance.todosLosAeropuertos
 	}
 		
 	def buscar() {
-		var Busqueda busqueda = new Busqueda(origen, destino, fechaDesde, fechaHasta, tarifaMax,usr)
+		resultados = newArrayList
+		var Double precioMaximo = null
+		if(tarifaMax != null){precioMaximo = new Double(tarifaMax)} // para poder limpiar el campo
+		var Busqueda busqueda = new Busqueda(origen, destino, fechaDesde, fechaHasta, precioMaximo,usr)
 		resultados = VuelosRepositorio.getInstance.buscar(busqueda)
+		if(resultados.isEmpty){ resultados = null}
 	}
 	
-	def separarAsientos() { 
-	// la parte comentada de este metodo,debe ofrecer solamente los asientos con precio menor al buscado
-//		if(tarifaMax != null){
-//			val valor = Float.parseFloat(tarifaMax)
-//			asientosDisponibles = vueloSeleccionado.asientosValorMaximo(valor)
-//		}else { asientosDisponibles = vueloSeleccionado.asientos }
-		asientosDisponibles = vueloSeleccionado.asientos
-		
+	def clear(){
+		origen = null
+		destino = null
+		fechaDesde = null
+		fechaHasta = null
+		tarifaMax = null
 	}
 }

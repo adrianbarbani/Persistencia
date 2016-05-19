@@ -29,5 +29,9 @@ class AeropuertosRepositorio {
 		todosLosAeropuertos.map[ aeropuerto | aeropuerto.nombre ].toList
 	}
 	
+	def agregarAeropuerto(Aeropuerto unAeropuerto){
+		todosLosAeropuertos.add(unAeropuerto)
+	}
+	
 }
 

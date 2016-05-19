@@ -8,7 +8,7 @@ import java.util.Date
 @Observable
 class TarifaComun extends Tarifa {
 	
-	new(float unValor) {
+	new(Double unValor) {
 		super(unValor)
 	}
 	
